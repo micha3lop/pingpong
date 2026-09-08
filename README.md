@@ -26,9 +26,6 @@ CSS3 — Styling and layout
 JavaScript — Game logic, controls, collision detection, scoring, and AI
 📸 Screenshots
 
-Add screenshots of the game here:
-
-![Ping Pong Game](screenshot.png)
 
 🔮 Future Improvements
 
