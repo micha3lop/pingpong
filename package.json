@@ -1,0 +1,21 @@
+{
+    "name": "ping-pong",
+    "version": "1.0.0",
+    "description": "Ping Pong Game",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron .",
+      "build": "electron-builder"
+    },
+    "build": {
+      "appId": "com.example.pingpong",
+      "productName": "Ping Pong",
+      "win": {
+        "target": "nsis"
+      }
+    },
+    "devDependencies": {
+      "electron": "^latest",
+      "electron-builder": "^latest"
+    }
+  }

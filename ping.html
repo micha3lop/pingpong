@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ping Pong</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #080b16;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    justify-content: center;
+  }
+
+  h1 {
+    margin: 0 0 10px;
+    color: #35e7ff;
+  }
+
+  #score {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  canvas {
+    background: #11182a;
+    border: 3px solid #35e7ff;
+    border-radius: 10px;
+    box-shadow: 0 0 30px #35e7ff33;
+    max-width: 95vw;
+    max-height: 75vh;
+  }
+
+  p {
+    color: #aaa;
+    margin-top: 12px;
+  }
+
+  button {
+    background: #35e7ff;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🏓 Ping Pong</h1>
+<div id="score">0 : 0</div>
+
+<canvas id="game" width="900" height="500"></canvas>
+
+<p>Move your mouse/finger to control your paddle</p>
+<button onclick="restart()">Restart</button>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const scoreText = document.getElementById("score");
+
+const W = canvas.width;
+const H = canvas.height;
+
+const paddle = {
+  width: 15,
+  height: 100,
+  x: 25,
+  y: H / 2 - 50,
+  speed: 8
+};
+
+const ai = {
+  width: 15,
+  height: 100,
+  x: W - 40,
+  y: H / 2 - 50,
+  speed: 5
+};
+
+let ball;
+let playerScore = 0;
+let aiScore = 0;
+let gameRunning = true;
+
+function resetBall(direction = 1) {
+  ball = {
+    x: W / 2,
+    y: H / 2,
+    radius: 9,
+    speedX: 5 * direction,
+    speedY: (Math.random() * 6 - 3)
+  };
+}
+
+function restart() {
+  playerScore = 0;
+  aiScore = 0;
+  paddle.y = H / 2 - paddle.height / 2;
+  ai.y = H / 2 - ai.height / 2;
+  gameRunning = true;
+  resetBall(Math.random() > 0.5 ? 1 : -1);
+  updateScore();
+}
+
+function updateScore() {
+  scoreText.textContent = `${playerScore} : ${aiScore}`;
+}
+
+function drawRect(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  drawRect(0, 0, W, H, "#11182a");
+
+  // Center line
+  ctx.strokeStyle = "#ffffff33";
+  ctx.setLineDash([12, 12]);
+  ctx.beginPath();
+  ctx.moveTo(W / 2, 0);
+  ctx.lineTo(W / 2, H);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Paddles
+  drawRect(paddle.x, paddle.y, paddle.width, paddle.height, "#35e7ff");
+  drawRect(ai.x, ai.y, ai.width, ai.height, "#ff4f81");
+
+  // Ball
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.shadowBlur = 15;
+  ctx.shadowColor = "#fff";
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+function update() {
+  if (!gameRunning) return;
+
+  // Ball movement
+  ball.x += ball.speedX;
+  ball.y += ball.speedY;
+
+  // Top/bottom collision
+  if (
+    ball.y - ball.radius <= 0 ||
+    ball.y + ball.radius >= H
+  ) {
+    ball.speedY *= -1;
+  }
+
+  // Player paddle collision
+  if (
+    ball.x - ball.radius <= paddle.x + paddle.width &&
+    ball.x > paddle.x &&
+    ball.y >= paddle.y &&
+    ball.y <= paddle.y + paddle.height
+  ) {
+    ball.x = paddle.x + paddle.width + ball.radius;
+    ball.speedX = Math.abs(ball.speedX) + 0.2;
+
+    const hit = (ball.y - (paddle.y + paddle.height / 2))
+                / (paddle.height / 2);
+
+    ball.speedY = hit * 6;
+  }
+
+  // AI paddle collision
+  if (
+    ball.x + ball.radius >= ai.x &&
+    ball.x < ai.x + ai.width &&
+    ball.y >= ai.y &&
+    ball.y <= ai.y + ai.height
+  ) {
+    ball.x = ai.x - ball.radius;
+    ball.speedX = -Math.abs(ball.speedX) - 0.2;
+
+    const hit = (ball.y - (ai.y + ai.height / 2))
+                / (ai.height / 2);
+
+    ball.speedY = hit * 6;
+  }
+
+  // AI follows ball
+  const aiCenter = ai.y + ai.height / 2;
+
+  if (aiCenter < ball.y - 10) {
+    ai.y += ai.speed;
+  } else if (aiCenter > ball.y + 10) {
+    ai.y -= ai.speed;
+  }
+
+  ai.y = Math.max(0, Math.min(H - ai.height, ai.y));
+
+  // Player boundaries
+  paddle.y = Math.max(0, Math.min(H - paddle.height, paddle.y));
+
+  // Ball goes past left side
+  if (ball.x < 0) {
+    aiScore++;
+    updateScore();
+
+    if (aiScore >= 10) {
+      gameRunning = false;
+      setTimeout(() => alert("AI wins! 🤖"), 50);
+    } else {
+      resetBall(1);
+    }
+  }
+
+  // Ball goes past right side
+  if (ball.x > W) {
+    playerScore++;
+    updateScore();
+
+    if (playerScore >= 10) {
+      gameRunning = false;
+      setTimeout(() => alert("You win! 🏆"), 50);
+    } else {
+      resetBall(-1);
+    }
+  }
+}
+
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+// Mouse control
+canvas.addEventListener("mousemove", e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleY = H / rect.height;
+  paddle.y = (e.clientY - rect.top) * scaleY - paddle.height / 2;
+});
+
+// Touch control
+canvas.addEventListener("touchmove", e => {
+  e.preventDefault();
+
+  const rect = canvas.getBoundingClientRect();
+  const scaleY = H / rect.height;
+
+  paddle.y =
+    (e.touches[0].clientY - rect.top) * scaleY
+    - paddle.height / 2;
+}, { passive: false });
+
+restart();
+gameLoop();
+</script>
+
+</body>
+</html>
