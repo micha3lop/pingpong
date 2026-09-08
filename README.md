@@ -21,8 +21,8 @@ Try to hit the ball past the AI's paddle.
 The first player to score 10 points wins!
 
 # 🛠️ Technologies Used
-HTML5 — Game structure \n
-CSS3 — Styling and layout \n
+HTML5 — Game structure <br>
+CSS3 — Styling and layout <br>
 JavaScript — Game logic, controls, collision detection, scoring, and AI
 
 🔮 Future Improvements
