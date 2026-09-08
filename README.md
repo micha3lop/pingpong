@@ -19,14 +19,6 @@ Move your mouse over the game area to control the left paddle.
 On mobile, drag your finger up and down to control the paddle.
 Try to hit the ball past the AI's paddle.
 The first player to score 10 points wins!
-📁 Project Structure
-ping-pong-game/
-│
-├── index.html
-└── README.md
-
-
-If you split the game into separate CSS and JavaScript files, the structure can be updated accordingly.
 
 🚀 Getting Started
 Option 1 — Run Locally
@@ -55,7 +47,8 @@ Go to Settings → Pages.
 Select the main branch.
 Save the settings.
 GitHub will provide a public URL for your game.
-🛠️ Technologies Used
+
+# 🛠️ Technologies Used
 HTML5 — Game structure
 CSS3 — Styling and layout
 JavaScript — Game logic, controls, collision detection, scoring, and AI
@@ -82,4 +75,4 @@ Possible improvements include:
 
 This project is open source and available for learning and personal use.
 
-Made with ❤️ and JavaScript 🏓
+Made with ❤️ and JavaScript
