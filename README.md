@@ -20,34 +20,6 @@ On mobile, drag your finger up and down to control the paddle.
 Try to hit the ball past the AI's paddle.
 The first player to score 10 points wins!
 
-🚀 Getting Started
-Option 1 — Run Locally
-
-Clone the repository:
-
-git clone YOUR_REPOSITORY_URL
-
-
-Go into the project directory:
-
-cd ping-pong-game
-
-
-Open index.html in your browser.
-
-That's it! No installation or dependencies are required.
-
-Option 2 — GitHub Pages
-
-You can host the game for free using GitHub Pages.
-
-Push the project to GitHub.
-Open your repository on GitHub.
-Go to Settings → Pages.
-Select the main branch.
-Save the settings.
-GitHub will provide a public URL for your game.
-
 # 🛠️ Technologies Used
 HTML5 — Game structure
 CSS3 — Styling and layout
